@@ -15,4 +15,14 @@ Direct invoke from terminal
     chmod +x ssrf-pingback.py
     sudo mv ssrf-pingback.py /usr/local/bin
 		
+
+
+
+Create input url file
+
+Install qsreplace  https://github.com/tomnomnom/qsreplace 
+    
+    cat urls.txt | qsreplace burp-collaborator-url > url-file.txt
+    
+
     
