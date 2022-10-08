@@ -6,13 +6,13 @@ import requests
 poll_delay = None
 url_file = ""
 biid_req_url = ""
-burp_collab_url = ""
 urls = []
+output_file = ""
 
 
 def parse_arguments():
-    global url_file, biid_req_url, burp_collab_url, poll_delay
-    usage = "\tUsage: ssrf-pingback.py --uf url_file --biid biid_req_url --pdelay poll_delay \n\tfor more try help -h"
+    global url_file, biid_req_url, poll_delay, output_file
+    usage = "\tUsage: ssrf-pingback.py --uf url_file --biid biid_req_url --pdelay poll_delay [--outfile filename] \n\tfor more try help -h"
 
     parser = OptionParser(
         usage=usage)
@@ -27,6 +27,9 @@ def parse_arguments():
     parser.add_option('--pdelay', dest='poll_delay',
                       type='float',
                       help='time delay between each poll',)
+    parser.add_option('--outfile',  dest='out_file',
+                      type='string',
+                      help='output file name',)
 
     (options, args) = parser.parse_args()
     if (options.url_file == None):
@@ -44,12 +47,14 @@ def parse_arguments():
         exit(0)
     else:
         biid_req_url = options.biid_req_url
+    output_file = options.out_file if options.out_file != None else None
 
 
 class bcolors:
     OKBLUE = '\033[94m'
     ENDC = '\033[0m'
     BOLD = '\033[1m'
+    WARNING = '\033[93m'
 
 
 def urls_load():
@@ -75,15 +80,31 @@ def request_handler(req):
         urls.append(req)
 
 
+def file_write(data):
+    try:
+        with open(output_file, 'w') as writer:
+            writer.write(data)
+            print(bcolors.WARNING+'\nOutput file : '+output_file+bcolors.ENDC)
+    except Exception as e:
+        print("Exception in file write "+str(e))
+
+
 if __name__ == "__main__":
 
     print(bcolors.OKBLUE + bcolors.BOLD +
           '\n\tSSRF PING BACK\n'+bcolors.ENDC+bcolors.ENDC)
     parse_arguments()
     urls_load()
+    buffer = ""
     if(len(urls)) >= 1:
         print('\n[!] Got ping\n')
         for i in urls:
+            buffer += str(i)+'\n'
             print('\tURL %s' % (i))
+        if output_file is not None:
+            file_write(buffer)
     else:
-        print('[-] No ping back')
+        buffer='[-] No ping back'
+        if output_file is not None:
+            file_write(buffer)
+        print(buffer)
