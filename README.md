@@ -26,3 +26,20 @@ Install qsreplace  https://github.com/tomnomnom/qsreplace
     
 
     
+What is biid and how to capture it 
+
+Biid is a persistent url for getting poll results for burp collaborators. For each burp collaborator string there is a unique biid url.
+For capturing the biid.
+
+Open Burp Suite , go to =>  Project Options  => Misc => tickmark , Poll over unencrypted HTTP
+
+
+![poll-over-un](https://user-images.githubusercontent.com/72538652/197195032-0af6fa56-2a48-4659-9ed5-b95b7195dc7e.png)
+
+Generate one collaborator payload , note down the payload id.
+Open wireshark , trigger above generated payload in any browser.
+Find biid in wireshark by the filter ‘http’ and search string ‘biid’.
+	Note down collaborator id and biid. Both are persistent.
+	
+![wireshark](https://user-images.githubusercontent.com/72538652/197195171-55f22425-4178-46d4-abb0-02b735fb2119.png)
+
